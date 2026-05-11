@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://yourusername.github.io',
+  site: 'https://2418527951h.github.io',
   // base: '/CV_web',  // 如果仓库不是 username.github.io，取消此行注释
   i18n: {
     defaultLocale: 'zh',
