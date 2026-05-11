@@ -1,0 +1,29 @@
+---
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('notes');
+  return posts
+    .filter(post => post.data.lang === 'zh')
+    .map(post => ({
+      params: { slug: post.id },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<PostLayout
+  title={post.data.title}
+  date={post.data.date}
+  tags={post.data.tags}
+  lang="zh"
+  collection="notes"
+  paper_url={post.data.paper_url}
+  paper_venue={post.data.paper_venue}
+>
+  <Content />
+</PostLayout>

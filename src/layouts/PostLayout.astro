@@ -1,0 +1,44 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  date: Date;
+  tags?: string[];
+  lang?: Lang;
+  collection: 'blog' | 'notes';
+  paper_url?: string;
+  paper_venue?: string;
+}
+
+const { title, date, tags = [], lang = 'zh', collection, paper_url, paper_venue } = Astro.props;
+const t = useTranslations(lang);
+const prefix = lang === 'zh' ? '' : '/en';
+const backUrl = `${prefix}/${collection}`;
+const backLabel = t('post.back');
+---
+
+<BaseLayout title={`${title} - 黄钰`} description={title} lang={lang}>
+  <article>
+    <a href={backUrl} style="font-size: 0.9rem;">&larr; {backLabel}</a>
+
+    <h1 style="margin-top: var(--spacing-md);">{title}</h1>
+
+    <div class="card-meta" style="margin-bottom: var(--spacing-lg);">
+      <span>{t('post.published')} {date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}</span>
+      {paper_venue && <span> · {paper_venue}</span>}
+      {paper_url && <span> · <a href={paper_url} target="_blank" rel="noopener">Paper</a></span>}
+    </div>
+
+    {tags.length > 0 && (
+      <div style="margin-bottom: var(--spacing-lg);">
+        {tags.map(tag => <span class="tag">{tag}</span>)}
+      </div>
+    )}
+
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  lang?: 'zh' | 'en';
+}
+
+const { lang = 'zh' } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      &copy; {year} {lang === 'zh' ? '黄钰' : 'Yu Huang'}.
+      {lang === 'zh' ? '使用' : 'Built with'}
+      <a href="https://astro.build" target="_blank" rel="noopener">Astro</a>
+      {lang === 'zh' ? '构建' : ''}.
+    </p>
+  </div>
+</footer>

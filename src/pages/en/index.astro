@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+import { getCollection } from 'astro:content';
+
+const lang = 'en';
+const t = useTranslations(lang);
+
+const allBlog = (await getCollection('blog'))
+  .filter(post => post.data.lang === 'en')
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const allNotes = (await getCollection('notes'))
+  .filter(post => post.data.lang === 'en')
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const recentPosts = [...allBlog, ...allNotes]
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 5);
+---
+
+<BaseLayout title="Yu Huang - Homepage" description="Yu Huang's personal academic homepage" lang={lang}>
+  <!-- Hero -->
+  <section class="hero">
+    <img
+      src="/miku1.jpg"
+      alt="Yu Huang"
+      class="hero-avatar"
+    />
+    <div class="hero-info">
+      <h1>Yu Huang</h1>
+      <p class="hero-subtitle">{t('home.subtitle')}</p>
+      <p>{t('home.intro')}</p>
+      <div class="hero-links">
+        <a href="mailto:2418527951@qq.com">Email</a>
+        <a href="https://github.com/2418527951h" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research Keywords -->
+  <section>
+    <h2 class="section-title">{t('research.directions')}</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+      <span class="tag" style="font-size: 0.9rem; padding: 0.3em 0.8em;">Person Re-ID</span>
+      <span class="tag" style="font-size: 0.9rem; padding: 0.3em 0.8em;">Dataset Quality</span>
+      <span class="tag" style="font-size: 0.9rem; padding: 0.3em 0.8em;">Multimodal Learning</span>
+      <span class="tag" style="font-size: 0.9rem; padding: 0.3em 0.8em;">Computer Vision</span>
+    </div>
+  </section>
+
+  <!-- Recent Posts -->
+  {recentPosts.length > 0 && (
+    <section>
+      <h2 class="section-title">{t('home.recent')}</h2>
+      {recentPosts.map(post => {
+        const collection = post.collection;
+        return (
+          <a href={`/en/${collection}/${post.id}`} class="card" style="display: block; text-decoration: none; color: inherit;">
+            <div class="card-meta">
+              {post.data.date.toLocaleDateString('en-US')} · {collection === 'blog' ? 'Blog' : 'Notes'}
+            </div>
+            <div class="card-title">{post.data.title}</div>
+            {post.data.summary && <div class="card-summary">{post.data.summary}</div>}
+          </a>
+        );
+      })}
+    </section>
+  )}
+</BaseLayout>

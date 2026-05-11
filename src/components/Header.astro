@@ -1,0 +1,44 @@
+---
+import { getNavItems, getLangSwitchUrl } from '../i18n/utils';
+
+interface Props {
+  lang?: 'zh' | 'en';
+}
+
+const { lang = 'zh' } = Astro.props;
+const navItems = getNavItems(lang);
+const currentPath = Astro.url.pathname;
+const switchUrl = getLangSwitchUrl(currentPath, lang);
+const switchLabel = lang === 'zh' ? 'EN' : '中文';
+---
+
+<header class="site-header">
+  <div class="container">
+    <a href={lang === 'zh' ? '/' : '/en/'} class="site-title">
+      {lang === 'zh' ? '黄钰' : 'Yu Huang'}
+    </a>
+
+    <button class="menu-toggle" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="site-nav">
+      {navItems.map(item => (
+        <a href={item.href} class:list={[{ active: currentPath === item.href || currentPath === item.href + '/' }]}>
+          {item.label}
+        </a>
+      ))}
+      <a href={switchUrl} class="lang-switch">{switchLabel}</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('.site-nav');
+  toggle?.addEventListener('click', () => {
+    nav?.classList.toggle('open');
+  });
+</script>

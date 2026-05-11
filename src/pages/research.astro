@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations } from '../i18n/utils';
+
+const lang = 'zh';
+const t = useTranslations(lang);
+---
+
+<BaseLayout title="研究 - 黄钰" description="黄钰的研究方向和论文" lang={lang}>
+  <h1>{t('research.title')}</h1>
+
+  <!-- Research Directions -->
+  <h2 class="section-title">{t('research.directions')}</h2>
+
+  <h3>行人重识别 (Person Re-Identification)</h3>
+  <p>
+    研究跨摄像头场景下的行人匹配与检索问题，
+    关注特征表示学习、跨域适应等核心挑战。
+  </p>
+
+  <h3>数据集质量评估与优化</h3>
+  <p>
+    探索评估训练数据集质量的方法，
+    研究如何通过数据层面的优化提升模型性能。
+  </p>
+
+  <h3>多模态学习</h3>
+  <p>
+    探索视觉-语言等多模态信息的融合与理解，
+    关注跨模态检索、多模态表征学习等方向。
+  </p>
+
+  <!-- Publications (暂时隐藏，有论文后取消注释)
+  <hr />
+  <h2 class="section-title">{t('research.publications')}</h2>
+  -->
+</BaseLayout>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { getCollection } from 'astro:content';
+
+const lang = 'en';
+const t = useTranslations(lang);
+
+const posts = (await getCollection('notes'))
+  .filter(post => post.data.lang === 'en' && !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title={`${t('notes.title')} - Yu Huang`} description="Paper Notes" lang={lang}>
+  <h1>{t('notes.title')}</h1>
+
+  {posts.length === 0 && <p style="color: var(--color-text-light);">No notes yet.</p>}
+
+  {posts.map(post => (
+    <a href={`/en/notes/${post.id}`} class="card" style="display: block; text-decoration: none; color: inherit;">
+      <div class="card-meta">
+        {post.data.date.toLocaleDateString('en-US')}
+        {post.data.paper_venue && <span> · {post.data.paper_venue}</span>}
+      </div>
+      <div class="card-title">{post.data.title}</div>
+      {post.data.summary && <div class="card-summary">{post.data.summary}</div>}
+      {post.data.tags.length > 0 && (
+        <div style="margin-top: 0.5rem;">
+          {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </a>
+  ))}
+</BaseLayout>
