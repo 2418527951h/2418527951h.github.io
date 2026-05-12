@@ -11,7 +11,7 @@ export const ui = {
     'nav.home': '首页',
     'nav.about': '关于',
     'nav.research': '研究',
-    'nav.blog': '博客',
+    'nav.projects': '项目',
     'nav.notes': '笔记',
 
     // Home
@@ -31,9 +31,9 @@ export const ui = {
     'research.directions': '研究方向',
     'research.publications': '发表论文',
 
-    // Blog & Notes
-    'blog.title': '技术博客',
-    'notes.title': '论文笔记',
+    // Projects & Notes
+    'projects.title': '项目',
+    'notes.title': '笔记',
     'post.back': '返回列表',
     'post.toc': '目录',
     'post.published': '发布于',
@@ -43,7 +43,7 @@ export const ui = {
     'nav.home': 'Home',
     'nav.about': 'About',
     'nav.research': 'Research',
-    'nav.blog': 'Blog',
+    'nav.projects': 'Projects',
     'nav.notes': 'Notes',
 
     'home.subtitle': 'Computer Vision | Multimodal Learning',
@@ -60,8 +60,8 @@ export const ui = {
     'research.directions': 'Research Interests',
     'research.publications': 'Publications',
 
-    'blog.title': 'Tech Blog',
-    'notes.title': 'Paper Notes',
+    'projects.title': 'Projects',
+    'notes.title': 'Notes',
     'post.back': 'Back to list',
     'post.toc': 'Table of Contents',
     'post.published': 'Published on',

@@ -14,7 +14,7 @@
   --font-sans: 'Inter', 'Noto Sans SC', 'Source Han Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  --max-width: 720px;
+  --max-width: 960px;
   --header-height: 64px;
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;

@@ -1,24 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations } from '../../i18n/utils';
-import { getCollection } from 'astro:content';
 
 const lang = 'en';
 const t = useTranslations(lang);
-
-const allBlog = (await getCollection('blog'))
-  .filter(post => post.data.lang === 'en')
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-
-const allNotes = (await getCollection('notes'))
-  .filter(post => post.data.lang === 'en')
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-
-const recentPosts = [...allBlog, ...allNotes]
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 5);
 ---
 
 <BaseLayout title="Yu Huang - Homepage" description="Yu Huang's personal academic homepage" lang={lang}>
@@ -51,22 +36,101 @@ const recentPosts = [...allBlog, ...allNotes]
     </div>
   </section>
 
-  <!-- Recent Posts -->
-  {recentPosts.length > 0 && (
-    <section>
-      <h2 class="section-title">{t('home.recent')}</h2>
-      {recentPosts.map(post => {
-        const collection = post.collection;
-        return (
-          <a href={`/en/${collection}/${post.id}`} class="card" style="display: block; text-decoration: none; color: inherit;">
-            <div class="card-meta">
-              {post.data.date.toLocaleDateString('en-US')} · {collection === 'blog' ? 'Blog' : 'Notes'}
-            </div>
-            <div class="card-title">{post.data.title}</div>
-            {post.data.summary && <div class="card-summary">{post.data.summary}</div>}
-          </a>
-        );
-      })}
-    </section>
-  )}
+  <!-- Education -->
+  <section>
+    <h2 class="section-title">Education</h2>
+    <ul class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-date">2025 - Present</div>
+        <strong>Beihang University · Electronic Information</strong>
+        <p>Master's Student, Research: Computer Vision</p>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-date">2021 - 2025</div>
+        <strong>Beihang University · Computer Science and Technology</strong>
+        <p>Bachelor's Degree</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Internship -->
+  <section>
+    <h2 class="section-title">Internship</h2>
+    <div class="intern-item">
+      <div class="intern-header">
+        <strong>Multimodal Algorithm Researcher</strong>
+        <span class="intern-company">Baidu Health</span>
+      </div>
+      <p class="intern-desc">Building intelligent medical algorithm capabilities for Baidu's health business to improve service efficiency and user experience.</p>
+
+      <div class="intern-project">
+        <div class="intern-project-title">VITA Intent Recognition</div>
+        <div class="intern-tech-line">DAPO · SFT · Qwen3.5-0.8B · InternVL3.5-1B · ms-swift</div>
+      </div>
+
+      <div class="intern-project">
+        <div class="intern-project-title">Health Records APP</div>
+        <div class="intern-tech-line">ResNet-18 · MobileNet-small · ONNX · MNN</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section>
+    <h2 class="section-title">Skills</h2>
+    <ul>
+      <li><strong>Languages:</strong> Python, C/C++, Java</li>
+      <li><strong>Deep Learning:</strong> PyTorch, OpenCV</li>
+      <li><strong>Tools:</strong> Git, Linux, Docker, LaTeX</li>
+    </ul>
+  </section>
+
+  <!-- Contact -->
+  <section>
+    <h2 class="section-title">Contact</h2>
+    <ul style="list-style: none; padding-left: 0;">
+      <li>Email: <a href="mailto:2418527951@qq.com">2418527951@qq.com</a></li>
+      <li>GitHub: <a href="https://github.com/2418527951h" target="_blank" rel="noopener">github.com/2418527951h</a></li>
+    </ul>
+  </section>
 </BaseLayout>
+
+<style>
+  .intern-item {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .intern-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.05rem;
+  }
+
+  .intern-company {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .intern-desc {
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .intern-project {
+    margin-bottom: var(--spacing-lg);
+    padding-left: var(--spacing-md);
+    border-left: 3px solid var(--color-accent);
+  }
+
+  .intern-project-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .intern-tech-line {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+  }
+</style>

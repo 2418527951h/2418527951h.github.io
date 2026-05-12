@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <PostLayout
@@ -24,6 +24,7 @@ const { Content } = await render(post);
   collection="notes"
   paper_url={post.data.paper_url}
   paper_venue={post.data.paper_venue}
+  headings={headings}
 >
   <Content />
 </PostLayout>

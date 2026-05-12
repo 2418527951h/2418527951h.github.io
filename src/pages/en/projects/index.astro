@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const lang = 'en';
+const t = useTranslations(lang);
+
+const projects = [
+  {
+    title: 'Personal Academic Website',
+    description: 'A bilingual personal website built with Astro, supporting Markdown notes, project showcase, deployed on GitHub Pages.',
+    tech: ['Astro', 'TypeScript', 'CSS'],
+    link: 'https://github.com/2418527951h',
+  },
+];
+---
+
+<BaseLayout title={`${t('projects.title')} - Yu Huang`} description="Projects" lang={lang}>
+  <h1>{t('projects.title')}</h1>
+
+  {projects.map(project => (
+    <div class="card project-card">
+      <div class="card-title">{project.title}</div>
+      <div class="card-summary">{project.description}</div>
+      <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 1rem;">
+        <div>
+          {project.tech.map(t => <span class="tag">{t}</span>)}
+        </div>
+        {project.link && (
+          <a href={project.link} target="_blank" rel="noopener" style="font-size: 0.85rem;">
+            GitHub &rarr;
+          </a>
+        )}
+      </div>
+    </div>
+  ))}
+
+  <p style="color: var(--color-text-light); font-style: italic; margin-top: 2rem;">
+    More projects coming soon...
+  </p>
+</BaseLayout>
+
+<style>
+  .project-card {
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .project-card:hover {
+    transform: translateY(-2px);
+  }
+</style>

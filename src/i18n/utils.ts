@@ -33,9 +33,8 @@ export function getNavItems(lang: Lang) {
   const prefix = lang === 'zh' ? '' : '/en';
   return [
     { label: t('nav.home'), href: `${prefix}/` },
-    { label: t('nav.about'), href: `${prefix}/about` },
     { label: t('nav.research'), href: `${prefix}/research` },
-    { label: t('nav.blog'), href: `${prefix}/blog` },
+    { label: t('nav.projects'), href: `${prefix}/projects` },
     { label: t('nav.notes'), href: `${prefix}/notes` },
   ];
 }

@@ -9,15 +9,30 @@ const t = useTranslations(lang);
 const posts = (await getCollection('notes'))
   .filter(post => post.data.lang === 'en' && !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = [...new Set(posts.flatMap(post => post.data.tags))];
 ---
 
 <BaseLayout title={`${t('notes.title')} - Yu Huang`} description="Paper Notes" lang={lang}>
   <h1>{t('notes.title')}</h1>
 
+  <!-- Category Tabs -->
+  <div class="category-tabs">
+    <button class="category-tab active" data-category="all">All</button>
+    {categories.map(cat => (
+      <button class="category-tab" data-category={cat}>{cat}</button>
+    ))}
+  </div>
+
   {posts.length === 0 && <p style="color: var(--color-text-light);">No notes yet.</p>}
 
   {posts.map(post => (
-    <a href={`/en/notes/${post.id}`} class="card" style="display: block; text-decoration: none; color: inherit;">
+    <a
+      href={`/en/${post.collection}/${post.id}`}
+      class="card note-card"
+      data-tags={post.data.tags.join(',')}
+      style="display: block; text-decoration: none; color: inherit;"
+    >
       <div class="card-meta">
         {post.data.date.toLocaleDateString('en-US')}
         {post.data.paper_venue && <span> · {post.data.paper_venue}</span>}
@@ -32,3 +47,64 @@ const posts = (await getCollection('notes'))
     </a>
   ))}
 </BaseLayout>
+
+<style>
+  .category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .category-tab {
+    padding: 0.35em 1em;
+    font-size: 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-sans);
+  }
+
+  .category-tab:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .category-tab.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+
+  .note-card.hidden {
+    display: none !important;
+  }
+</style>
+
+<script>
+  const tabs = document.querySelectorAll('.category-tab');
+  const cards = document.querySelectorAll('.note-card');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const category = tab.getAttribute('data-category');
+
+      cards.forEach(card => {
+        if (category === 'all') {
+          card.classList.remove('hidden');
+        } else {
+          const tags = card.getAttribute('data-tags')?.split(',') || [];
+          card.classList.toggle('hidden', !tags.includes(category));
+        }
+      });
+    });
+  });
+</script>

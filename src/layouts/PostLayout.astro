@@ -10,35 +10,151 @@ interface Props {
   collection: 'blog' | 'notes';
   paper_url?: string;
   paper_venue?: string;
+  headings?: { depth: number; slug: string; text: string }[];
 }
 
-const { title, date, tags = [], lang = 'zh', collection, paper_url, paper_venue } = Astro.props;
+const { title, date, tags = [], lang = 'zh', collection, paper_url, paper_venue, headings = [] } = Astro.props;
 const t = useTranslations(lang);
 const prefix = lang === 'zh' ? '' : '/en';
-const backUrl = `${prefix}/${collection}`;
+const backUrl = `${prefix}/notes`;
 const backLabel = t('post.back');
+const tocHeadings = headings.filter(h => h.depth <= 3);
 ---
 
 <BaseLayout title={`${title} - 黄钰`} description={title} lang={lang}>
-  <article>
-    <a href={backUrl} style="font-size: 0.9rem;">&larr; {backLabel}</a>
+  <div class="post-layout">
+    <article class="post-content">
+      <a href={backUrl} style="font-size: 0.9rem;">&larr; {backLabel}</a>
 
-    <h1 style="margin-top: var(--spacing-md);">{title}</h1>
+      <h1 style="margin-top: var(--spacing-md);">{title}</h1>
 
-    <div class="card-meta" style="margin-bottom: var(--spacing-lg);">
-      <span>{t('post.published')} {date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}</span>
-      {paper_venue && <span> · {paper_venue}</span>}
-      {paper_url && <span> · <a href={paper_url} target="_blank" rel="noopener">Paper</a></span>}
-    </div>
-
-    {tags.length > 0 && (
-      <div style="margin-bottom: var(--spacing-lg);">
-        {tags.map(tag => <span class="tag">{tag}</span>)}
+      <div class="card-meta" style="margin-bottom: var(--spacing-lg);">
+        <span>{t('post.published')} {date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}</span>
+        {paper_venue && <span> · {paper_venue}</span>}
+        {paper_url && <span> · <a href={paper_url} target="_blank" rel="noopener">Paper</a></span>}
       </div>
-    )}
 
-    <div class="prose">
-      <slot />
-    </div>
-  </article>
+      {tags.length > 0 && (
+        <div style="margin-bottom: var(--spacing-lg);">
+          {tags.map(tag => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+
+    {tocHeadings.length > 0 && (
+      <aside class="toc-sidebar">
+        <nav class="toc">
+          <div class="toc-title">{t('post.toc')}</div>
+          <ul>
+            {tocHeadings.map(h => (
+              <li class={`toc-item toc-depth-${h.depth}`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    )}
+  </div>
 </BaseLayout>
+
+<style>
+  .post-layout {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+  }
+
+  .post-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toc-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+  }
+
+  .toc {
+    position: sticky;
+    top: calc(var(--header-height) + 2rem);
+    max-height: calc(100vh - var(--header-height) - 4rem);
+    overflow-y: auto;
+  }
+
+  .toc-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 2px solid var(--color-border);
+  }
+
+  .toc-item {
+    margin: 0;
+  }
+
+  .toc-item a {
+    display: block;
+    padding: 0.25em 0 0.25em 0.75rem;
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -2px;
+    transition: all 0.2s;
+    line-height: 1.4;
+  }
+
+  .toc-item a:hover,
+  .toc-item a.active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+  }
+
+  .toc-depth-3 a {
+    padding-left: 1.5rem;
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 960px) {
+    .toc-sidebar {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const headings = document.querySelectorAll('.prose h2, .prose h3');
+  const tocLinks = document.querySelectorAll('.toc-item a');
+
+  if (headings.length > 0 && tocLinks.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            tocLinks.forEach(link => link.classList.remove('active'));
+            const id = entry.target.getAttribute('id');
+            const activeLink = document.querySelector(`.toc-item a[href="#${id}"]`);
+            activeLink?.classList.add('active');
+          }
+        });
+      },
+      { rootMargin: '-80px 0px -80% 0px' }
+    );
+
+    headings.forEach(h => observer.observe(h));
+  }
+</script>
